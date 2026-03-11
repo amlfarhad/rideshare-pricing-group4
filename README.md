@@ -1,6 +1,9 @@
 # Group 4: Rideshare Dynamic Pricing
 ## BAX 422 (DDR) + BAX 452 (ML&AI) | UC Davis MSBA | Winter 2026
 
+**About:** This project analyzes the drivers of rideshare dynamic pricing in Chicago. By integrating City of Chicago SODA API data with historical weather, local event permits, and neighborhood socioeconomic indicators, we build a robust data pipeline (DDR) to fuel machine learning models (ML) that predict pricing surges and identify non-linear relationships between environment and fare.
+
+
 **Research Question:** What actually drives rideshare dynamic pricing in Chicago? Is it just supply/demand, or do weather, local events, and neighborhood demographics play a hidden role?
 
 ## Project Structure
