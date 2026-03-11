@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import sqlite3
 
 os.makedirs("ML/data", exist_ok=True)
 
@@ -141,3 +142,45 @@ print(f"Final master dataset: {len(rides):,} rows, {len(rides.columns)} columns"
 
 rides.to_csv("ML/data/chicago_rides_master.csv", index=False)
 print("Saved to ML/data/chicago_rides_master.csv")
+
+
+#---------- Load into SQLite ----------
+
+# storing all tables in a local SQLite db so anyone can query the data
+# without loading the full CSVs into memory every time
+conn = sqlite3.connect("DDR/data/rideshare.db")
+
+# reload the raw sources so we keep the DB tables clean and separate from the joined master
+raw_rides = pd.read_csv("DDR/data/chicago_rideshare_q1_2025.csv")
+raw_weather = pd.read_csv("DDR/data/raw_weather.csv")
+raw_events = pd.read_csv("DDR/data/raw_events.csv")
+raw_demographics = pd.read_csv("DDR/data/raw_demographics.csv")
+
+raw_rides.to_sql("rides", conn, if_exists="replace", index=False)
+raw_weather.to_sql("weather", conn, if_exists="replace", index=False)
+raw_events.to_sql("events", conn, if_exists="replace", index=False)
+raw_demographics.to_sql("demographics", conn, if_exists="replace", index=False)
+rides.to_sql("master", conn, if_exists="replace", index=False)
+
+# quick sanity check - avg fare per income quartile to confirm the join produced meaningful data
+validation_query = """
+    SELECT
+        CASE
+            WHEN per_capita_income < 15000 THEN 'Low'
+            WHEN per_capita_income < 30000 THEN 'Middle'
+            ELSE 'High'
+        END AS income_tier,
+        ROUND(AVG(fare), 2) AS avg_fare,
+        ROUND(AVG(fare_per_mile), 2) AS avg_fare_per_mile,
+        COUNT(*) AS num_trips
+    FROM master
+    GROUP BY income_tier
+    ORDER BY avg_fare DESC
+"""
+
+validation_df = pd.read_sql_query(validation_query, conn)
+print("\nAvg fare by neighborhood income tier:")
+print(validation_df.to_string(index=False))
+
+conn.close()
+print("\nSaved to DDR/data/rideshare.db")
