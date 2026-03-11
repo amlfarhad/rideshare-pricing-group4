@@ -1,4 +1,5 @@
-*.csv
+# *.csv removed so teammates can access data directly
+
 __pycache__/
 .DS_Store
 .ipynb_checkpoints/

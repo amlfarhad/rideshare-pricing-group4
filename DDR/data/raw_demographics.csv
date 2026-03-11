@@ -1,0 +1,79 @@
+community_area,community_area_name,per_capita_income,pct_below_poverty,hardship_index
+1.0,Rogers Park,23939,23.6,39.0
+2.0,West Ridge,23040,17.2,46.0
+3.0,Uptown,35787,24.0,20.0
+4.0,Lincoln Square,37524,10.9,17.0
+5.0,North Center,57123,7.5,6.0
+6.0,Lake View,60058,11.4,5.0
+7.0,Lincoln Park,71551,12.3,2.0
+8.0,Near North Side,88669,12.9,1.0
+9.0,Edison Park,40959,3.3,8.0
+10.0,Norwood Park,32875,5.4,21.0
+11.0,Jefferson Park,27751,8.6,25.0
+12.0,Forest Glen,44164,7.5,11.0
+13.0,North Park,26576,13.2,33.0
+14.0,Albany Park,21323,19.2,53.0
+15.0,Portage Park,24336,11.6,35.0
+16.0,Irving Park,27249,13.1,34.0
+17.0,Dunning,26282,10.6,28.0
+18.0,Montclaire,22014,15.3,50.0
+19.0,Belmont Cragin,15461,18.7,70.0
+20.0,Hermosa,15089,20.5,71.0
+21.0,Avondale,20039,15.3,42.0
+22.0,Logan Square,31908,16.8,23.0
+23.0,Humboldt park,13781,33.9,85.0
+24.0,West Town,43198,14.7,10.0
+25.0,Austin,15957,28.6,73.0
+26.0,West Garfield Park,10934,41.7,92.0
+27.0,East Garfield Park,12961,42.4,83.0
+28.0,Near West Side,44689,20.6,15.0
+29.0,North Lawndale,12034,43.1,87.0
+30.0,South Lawndale,10402,30.7,96.0
+31.0,Lower West Side,16444,25.8,76.0
+32.0,Loop,65526,14.7,3.0
+33.0,Near South Side,59077,13.8,7.0
+34.0,Armour Square,16148,40.1,82.0
+35.0,Douglas,23791,29.6,47.0
+36.0,Oakland,19252,39.7,78.0
+37.0,Fuller Park,10432,51.2,97.0
+38.0,Grand Boulevard,23472,29.3,57.0
+39.0,Kenwood,35911,21.7,26.0
+40.0,Washington Park,13785,42.1,88.0
+41.0,Hyde Park,39056,18.4,14.0
+42.0,Woodlawn,18672,30.7,58.0
+43.0,South Shore,19398,31.1,55.0
+44.0,Chatham,18881,27.8,60.0
+45.0,Avalon Park,24454,17.2,41.0
+46.0,South Chicago,16579,29.8,75.0
+47.0,Burnside,12515,33.0,79.0
+48.0,Calumet Heights,28887,11.5,38.0
+49.0,Roseland,17949,19.8,52.0
+50.0,Pullman,20588,21.6,51.0
+51.0,South Deering,14685,29.2,65.0
+52.0,East Side,17104,19.2,64.0
+53.0,West Pullman,16563,25.9,62.0
+54.0,Riverdale,8201,56.5,98.0
+55.0,Hegewisch,22677,17.1,44.0
+56.0,Garfield Ridge,26353,8.8,32.0
+57.0,Archer Heights,16134,14.1,67.0
+58.0,Brighton Park,13089,23.6,84.0
+59.0,McKinley Park,16954,18.7,61.0
+60.0,Bridgeport,22694,18.9,43.0
+61.0,New City,12765,29.0,91.0
+62.0,West Elsdon,15754,15.6,69.0
+63.0,Gage Park,12171,23.4,93.0
+64.0,Clearing,25113,8.9,29.0
+65.0,West Lawn,16907,14.9,56.0
+66.0,Chicago Lawn,13231,27.9,80.0
+67.0,West Englewood,11317,34.4,89.0
+68.0,Englewood,11888,46.6,94.0
+69.0,Greater Grand Crossing,17285,29.6,66.0
+70.0,Ashburn,23482,10.4,37.0
+71.0,Auburn Gresham,15528,27.6,74.0
+72.0,Beverly,39523,5.1,12.0
+73.0,Washington Height,19713,16.9,48.0
+74.0,Mount Greenwood,34381,3.4,16.0
+75.0,Morgan Park,27149,13.2,30.0
+76.0,O'Hare,25828,15.4,24.0
+77.0,Edgewater,33385,18.2,19.0
+,CHICAGO,28202,19.7,
