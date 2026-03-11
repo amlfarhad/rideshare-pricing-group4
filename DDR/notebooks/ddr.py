@@ -136,9 +136,6 @@ print("Saved to DDR/data/raw_weather.csv")
 
 
 #---------- Section 3: Events Data ----------
-
-#choosechicago.com is JavaScript-rendered so BeautifulSoup can't parse it
-#Using the Chicago Park District Event Permits from the data portal instead
 events_url = "https://data.cityofchicago.org/resource/pk66-w54g.json"
 
 events_params = {
@@ -160,7 +157,7 @@ major_venues = {
     "millennium park", "navy pier"
 }
 
-#Flag days with 3+ permitted events or events at major venues
+#Flag days with 15+ permitted events or events at major venues
 events_per_day = events_df["date"].value_counts()
 high_volume_days = set(events_per_day[events_per_day >= 15].index)
 
@@ -183,9 +180,6 @@ print("Saved to DDR/data/raw_events.csv")
 
 
 #---------- Section 4: Demographics Data ----------
-
-#Using the Chicago Socioeconomic Indicators dataset which already has income data
-#at the community area level - no Census API key or spatial join needed
 demo_url = "https://data.cityofchicago.org/resource/kn9c-c2s2.json"
 
 demo_params = {
