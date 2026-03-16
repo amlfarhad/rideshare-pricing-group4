@@ -5,9 +5,9 @@ import sqlite3
 os.makedirs("ML/data", exist_ok=True)
 
 
-#---------- Load All Four Source Files ----------
+# ---------- Load All Four Source Files ----------
 
-rides = pd.read_csv("DDR/data/chicago_rideshare_q1_2025.csv")
+rides = pd.read_csv("DDR/data/chicago_rideshare_q4_2025.csv")
 weather = pd.read_csv("DDR/data/raw_weather.csv")
 events = pd.read_csv("DDR/data/raw_events.csv")
 demographics = pd.read_csv("DDR/data/raw_demographics.csv")
@@ -18,18 +18,22 @@ print(f"Events loaded:       {len(events):,} rows")
 print(f"Demographics loaded: {len(demographics):,} rows")
 
 
-#---------- Clean Rides ----------
+# ---------- Clean Rides ----------
 
 # drop rows where any core column is missing - these can't be modeled at all
-rides = rides.dropna(subset=["fare", "trip_miles", "trip_seconds", "pickup_community_area"])
+rides = rides.dropna(
+    subset=["fare", "trip_miles", "trip_seconds", "pickup_community_area"]
+)
 
 # zero or negative values are data entry errors, not real trips
-rides = rides[(rides["fare"] > 0) & (rides["trip_miles"] > 0) & (rides["trip_seconds"] > 0)]
+rides = rides[
+    (rides["fare"] > 0) & (rides["trip_miles"] > 0) & (rides["trip_seconds"] > 0)
+]
 
 print(f"\nRides after basic cleaning: {len(rides):,} rows")
 
 
-#---------- Extract Time Features from Rides ----------
+# ---------- Extract Time Features from Rides ----------
 
 # parse to datetime temporarily just to pull out the features we need
 # the original trip_start_timestamp string column is left untouched
@@ -43,19 +47,21 @@ rides["month"] = dt_parsed.dt.month
 rides["is_weekend"] = (dt_parsed.dt.dayofweek >= 5).astype(int)
 
 
-#---------- Prep Weather for Join ----------
+# ---------- Prep Weather for Join ----------
 
-# open-meteo returns timestamps as "2025-01-01T00:00" with no seconds
+# open-meteo returns timestamps as "2025-10-01T00:00" with no seconds
 # parse and split into date + hour so we can match on the same key as rides
 weather["timestamp"] = pd.to_datetime(weather["timestamp"])
 weather["date"] = weather["timestamp"].dt.strftime("%Y-%m-%d")
 weather["hour"] = weather["timestamp"].dt.hour
 
 # only carry the columns we actually want in the final output
-weather = weather[["date", "hour", "temperature_c", "precipitation", "windspeed", "weather_label"]]
+weather = weather[
+    ["date", "hour", "temperature_c", "precipitation", "windspeed", "weather_label"]
+]
 
 
-#---------- Merge Rides + Weather ----------
+# ---------- Merge Rides + Weather ----------
 
 # left join so a missing weather row doesn't silently drop a valid trip
 rides = rides.merge(weather, on=["date", "hour"], how="left")
@@ -63,7 +69,7 @@ rides = rides.merge(weather, on=["date", "hour"], how="left")
 print(f"After weather merge:      {len(rides):,} rows")
 
 
-#---------- Prep Events for Join ----------
+# ---------- Prep Events for Join ----------
 
 # raw events has one row per permit - collapse to a single 0/1 per calendar day
 # if any event on that day was flagged major, the whole day gets a 1
@@ -75,7 +81,7 @@ daily_events = (
 )
 
 
-#---------- Merge Rides + Events ----------
+# ---------- Merge Rides + Events ----------
 
 rides = rides.merge(daily_events, on="date", how="left")
 
@@ -85,23 +91,20 @@ rides["day_has_major_event"] = rides["day_has_major_event"].fillna(0).astype(int
 print(f"After events merge:       {len(rides):,} rows")
 
 
-#---------- Merge Rides + Demographics ----------
+# ---------- Merge Rides + Demographics ----------
 
 # both pickup_community_area and community_area come from SODA and are float64
 # (values like 1.0, 2.0 ... 77.0) so they match as-is without any casting
 # rides whose community area isn't in 1-77 will get NaN in the demo columns
 # and will be dropped in the final dropna below
 rides = rides.merge(
-    demographics,
-    left_on="pickup_community_area",
-    right_on="community_area",
-    how="left"
+    demographics, left_on="pickup_community_area", right_on="community_area", how="left"
 )
 
 print(f"After demographics merge: {len(rides):,} rows")
 
 
-#---------- Derived Features ----------
+# ---------- Derived Features ----------
 
 # fare_per_mile normalizes price so short and long trips are comparable
 rides["fare_per_mile"] = rides["fare"] / rides["trip_miles"]
@@ -110,24 +113,38 @@ rides["fare_per_mile"] = rides["fare"] / rides["trip_miles"]
 rides["trip_duration_min"] = rides["trip_seconds"] / 60
 
 
-#---------- Select Final Columns ----------
+# ---------- Select Final Columns ----------
 
 # lock in the column order that every downstream script will expect
 keep_cols = [
-    "trip_start_timestamp", "trip_miles", "trip_seconds", "fare",
-    "pickup_community_area", "dropoff_community_area",
-    "date", "hour", "month", "is_weekend",
-    "temperature_c", "precipitation", "windspeed", "weather_label",
+    "trip_start_timestamp",
+    "trip_miles",
+    "trip_seconds",
+    "fare",
+    "pickup_community_area",
+    "dropoff_community_area",
+    "date",
+    "hour",
+    "month",
+    "is_weekend",
+    "temperature_c",
+    "precipitation",
+    "windspeed",
+    "weather_label",
     "day_has_major_event",
-    "community_area", "community_area_name",
-    "per_capita_income", "pct_below_poverty", "hardship_index",
-    "fare_per_mile", "trip_duration_min"
+    "community_area",
+    "community_area_name",
+    "per_capita_income",
+    "pct_below_poverty",
+    "hardship_index",
+    "fare_per_mile",
+    "trip_duration_min",
 ]
 
 rides = rides[keep_cols]
 
 
-#---------- Drop Remaining NaNs ----------
+# ---------- Drop Remaining NaNs ----------
 
 # anything still NaN at this point is a ride we couldn't fully enrich
 # the main culprit is trips where pickup_community_area had no match in demographics
@@ -138,20 +155,20 @@ print(f"\nDropped {rows_before - len(rides):,} rows with NaN after all merges")
 print(f"Final master dataset: {len(rides):,} rows, {len(rides.columns)} columns")
 
 
-#---------- Save ----------
+# ---------- Save ----------
 
 rides.to_csv("ML/data/chicago_rides_master.csv", index=False)
 print("Saved to ML/data/chicago_rides_master.csv")
 
 
-#---------- Load into SQLite ----------
+# ---------- Load into SQLite ----------
 
 # storing all tables in a local SQLite db so anyone can query the data
 # without loading the full CSVs into memory every time
 conn = sqlite3.connect("DDR/data/rideshare.db")
 
 # reload the raw sources so we keep the DB tables clean and separate from the joined master
-raw_rides = pd.read_csv("DDR/data/chicago_rideshare_q1_2025.csv")
+raw_rides = pd.read_csv("DDR/data/chicago_rideshare_q4_2025.csv")
 raw_weather = pd.read_csv("DDR/data/raw_weather.csv")
 raw_events = pd.read_csv("DDR/data/raw_events.csv")
 raw_demographics = pd.read_csv("DDR/data/raw_demographics.csv")
@@ -181,6 +198,41 @@ validation_query = """
 validation_df = pd.read_sql_query(validation_query, conn)
 print("\nAvg fare by neighborhood income tier:")
 print(validation_df.to_string(index=False))
+
+# query 2 - avg fare per mile on major event days vs normal days
+event_query = """
+    SELECT
+        CASE
+            WHEN day_has_major_event = 1 THEN 'Major event day'
+            ELSE 'Normal day'
+        END AS day_type,
+        ROUND(AVG(fare_per_mile), 2) AS avg_fare_per_mile,
+        ROUND(AVG(fare), 2) AS avg_fare,
+        COUNT(*) AS num_trips
+    FROM master
+    GROUP BY day_has_major_event
+    ORDER BY avg_fare_per_mile DESC
+"""
+
+event_df = pd.read_sql_query(event_query, conn)
+print("\nAvg fare by event day type:")
+print(event_df.to_string(index=False))
+
+# query 3 - avg fare per mile and trip volume by weather condition
+weather_query = """
+    SELECT
+        weather_label,
+        ROUND(AVG(fare_per_mile), 2) AS avg_fare_per_mile,
+        ROUND(AVG(fare), 2) AS avg_fare,
+        COUNT(*) AS num_trips
+    FROM master
+    GROUP BY weather_label
+    ORDER BY num_trips DESC
+"""
+
+weather_df = pd.read_sql_query(weather_query, conn)
+print("\nAvg fare by weather condition:")
+print(weather_df.to_string(index=False))
 
 conn.close()
 print("\nSaved to DDR/data/rideshare.db")

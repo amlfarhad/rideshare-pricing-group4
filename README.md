@@ -18,9 +18,11 @@ ML/           ← Modeling, validation, interpretation (BAX 452 report)
 ```
 
 ## Data Sources
-- **Chicago TNP Rides:** data.cityofchicago.org (SODA API) - 75K trips per month, Jan-Mar 2025
+- **Chicago TNP Rides:** data.cityofchicago.org (SODA API) - 75K trips per month, Oct-Dec 2025
 - **Weather:** open-meteo.com (Historical Weather API) - hourly temperature, precipitation, wind, weather code
-- **Events:** data.cityofchicago.org (Chicago Park District Event Permits, SODA API)
+- **Events (two sources combined):**
+  - data.cityofchicago.org (Chicago Special Events, SODA API `xgse-8eg7`) - permitted events flagged major if 3+ permits on that day
+  - Ticketmaster Discovery API - Chicago events flagged major if venue capacity > 5,000
 - **Demographics:** data.cityofchicago.org (Chicago Socioeconomic Indicators by Community Area, SODA API) - per capita income, poverty rate, hardship index for all 77 community areas
 
 ## Master Dataset
