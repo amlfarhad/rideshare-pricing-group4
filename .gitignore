@@ -1,0 +1,10 @@
+# *.csv removed so teammates can access data directly
+
+__pycache__/
+.DS_Store
+.ipynb_checkpoints/
+*.pyc
+.env
+Reference/
+ML/notebooks/*_Backup.ipynb
+ML/notebooks/~$*.docx
